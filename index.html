@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Camino Misterioso</title>
+  <style>
+    :root {
+      --rosa: #ff4081;
+      --fondo: linear-gradient(135deg, #1e1e2f, #3e3e5e);
+    }
+    
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--fondo);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #f5f5f5;
+      text-align: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    #respuesta {
+      width: 100%;
+      padding: 0.8rem;
+      box-sizing: border-box;
+    }
+    
+    .pantalla-inicial, .pantalla-juego {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 1rem;
+      width: 100%;
+    }
+    
+    .pantalla-inicial.active, .pantalla-juego.active {
+      display: flex;
+    }
+    
+    .container {
+      max-width: 700px;
+      width: 95%;
+      background-color: rgba(255,255,255,0.1);
+      border-radius: 1rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      animation: fadeIn 1s ease-in-out;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+    }
+    
+    h1 {
+      font-size: clamp(1.8rem, 5vw, 2.5rem);
+      margin-bottom: 1rem;
+      animation: pulse 2s infinite;
+      line-height: 1.2;
+      word-wrap: break-word;
+    }
+    
+    p {
+      font-size: clamp(0.9rem, 3vw, 1.1rem);
+      line-height: 1.5;
+      margin: 0.5rem 0;
+    }
+    
+    input, button {
+      width: 100%;
+      padding: clamp(0.7rem, 2vw, 1rem);
+      margin-top: 1rem;
+      border-radius: 0.5rem;
+      border: none;
+      font-size: clamp(0.9rem, 3vw, 1rem);
+      box-sizing: border-box;
+    }
+    
+    input {
+      background-color: #fff;
+      color: #000;
+      transition: all 0.3s ease;
+    }
+    
+    input:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(255, 64, 129, 0.3);
+      transform: translateY(-2px);
+    }
+    
+    button {
+      background-color: var(--rosa);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    button:hover {
+      background-color: #e7336e;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 64, 129, 0.4);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    #resultado p {
+      background-color: rgba(0,0,0,0.4);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin: 0.5rem 0;
+      font-size: clamp(0.85rem, 2.5vw, 1rem);
+      line-height: 1.4;
+    }
+    
+    #final {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    #codigoFinal {
+      background-color: rgba(255,255,255,0.9);
+      color: #333;
+      font-weight: bold;
+      text-align: center;
+      cursor: default;
+    }
+    
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    /* Media queries para diferentes tamaños de pantalla */
+    @media (max-width: 768px) {
+      .container {
+        padding: 1.5rem;
+        width: 98%;
+        margin: 0 1rem;
+      }
+      
+      .pantalla-inicial, .pantalla-juego {
+        padding: 0.5rem;
+      }
+      
+      h1 {
+        font-size: 1.8rem;
+        margin-bottom: 0.8rem;
+      }
+      
+      p {
+        font-size: 1rem;
+        margin: 0.4rem 0;
+      }
+      
+      input, button {
+        padding: 0.8rem;
+        margin-top: 0.8rem;
+        font-size: 1rem;
+      }
+      
+      #resultado p {
+        padding: 0.8rem;
+        font-size: 0.9rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .container {
+        padding: 1rem;
+        width: 100%;
+        margin: 0;
+        border-radius: 0.5rem;
+      }
+      
+      .pantalla-inicial, .pantalla-juego {
+        padding: 0.25rem;
+      }
+      
+      h1 {
+        font-size: 1.5rem;
+        margin-bottom: 0.6rem;
+      }
+      
+      p {
+        font-size: 0.9rem;
+        margin: 0.3rem 0;
+      }
+      
+      input, button {
+        padding: 0.7rem;
+        margin-top: 0.7rem;
+        font-size: 0.9rem;
+        border-radius: 0.4rem;
+      }
+      
+      #resultado p {
+        padding: 0.7rem;
+        font-size: 0.85rem;
+        margin: 0.4rem 0;
+      }
+      
+      button {
+        margin-bottom: 0.5rem;
+      }
+    }
+    
+    @media (min-width: 1200px) {
+      .container {
+        max-width: 800px;
+        padding: 3rem;
+      }
+      
+      h1 {
+        font-size: 3rem;
+      }
+      
+      p {
+        font-size: 1.2rem;
+      }
+      
+      input, button {
+        padding: 1.2rem;
+        font-size: 1.1rem;
+      }
+    }
+    
+    /* Orientación landscape en móviles */
+    @media (max-height: 500px) and (orientation: landscape) {
+      .pantalla-inicial, .pantalla-juego {
+        min-height: 100vh;
+        padding: 0.5rem;
+      }
+      
+      .container {
+        padding: 1rem;
+      }
+      
+      h1 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+      }
+      
+      input, button {
+        padding: 0.6rem;
+        margin-top: 0.5rem;
+      }
+    }
+    
+    /* Mejoras para pantallas táctiles */
+    @media (hover: none) and (pointer: coarse) {
+      button {
+        min-height: 44px; /* Tamaño mínimo recomendado para touch */
+      }
+      
+      input {
+        min-height: 44px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="pantalla-inicial active">
+    <div class="container">
+      <h1>💌 Bienvenida a tu acertijo misterioso</h1>
+      <p>Haz clic para poner a prueba tu simies. Deberás resolver un acertijo escribiendo una frase que deberás descubrir.</p>
+      <button onclick="iniciarJuego()">Iniciar</button>
+    </div>
+  </div>
+
+  <div class="pantalla-juego">
+    <div class="container">
+      <h1>🌟 Malupepa detective 🌟</h1>
+      <p id="pista">Pista: Las primeras veces son hermosas, la primera vez que te vi, el primer mensaje de buenos días, pagaría todos los días por repetirlas un decena de veces más.</p>
+      <input type="text" id="respuesta" placeholder="Escribe tu respuesta aquí...">
+      <button onclick="verificarRespuesta()">Enviar respuesta 💌</button>
+      <button onclick="mostrarPistaExtra()">Necesito una pista 🧩</button>
+      <div id="resultado"></div>
+
+      <div id="final" class="hidden">
+        <p>🎉 ¡Has reunido todo el código secreto! 🎉</p>
+        <input type="text" id="codigoFinal" readonly>
+        <button onclick="redirigirAVideo()">Ver mensaje final 💖</button>
+      </div>
+    </div>
+  </div>
+
+  <audio id="bg-music" autoplay muted></audio>
+
+  <script>
+    const respuestaCorrecta = "u7l8kkxv1f";
+    let intentos = 0;
+
+    const canciones = [
+      "audio/background-music.mp3",
+    ];
+    let indiceCancion = 0;
+    const audio = document.getElementById("bg-music");
+
+    function reproducirSiguienteCancion() {
+      audio.src = canciones[indiceCancion];
+      audio.load();
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {});
+      }
+    }
+
+    audio.addEventListener("ended", () => {
+      indiceCancion = (indiceCancion + 1) % canciones.length;
+      reproducirSiguienteCancion();
+    });
+
+    function iniciarJuego() {
+      document.querySelector('.pantalla-inicial').classList.remove('active');
+      document.querySelector('.pantalla-juego').classList.add('active');
+      audio.muted = false;
+      reproducirSiguienteCancion();
+    }
+
+    function verificarRespuesta() {
+      const input = document.getElementById('respuesta').value.trim().toLowerCase();
+      const resultado = document.getElementById('resultado');
+      const final = document.getElementById('final');
+
+      // Verificar si la respuesta está al revés
+      const respuestaAlReves = respuestaCorrecta.split('').reverse().join('');
+      
+      if (input === respuestaCorrecta) {
+        resultado.innerHTML = `<p>🔓 ¡Respuesta correcta! Has desbloqueado el siguiente paso. 💖</p>`;
+        final.classList.remove('hidden');
+        const codigoFinal = "cyblSDoRRxg";
+        document.getElementById('codigoFinal').value = codigoFinal;
+
+        const fraseDesencriptada = "por hoy y siempre serás el amor de mi vida";
+        let fraseMostrada = "";
+        let i = 0;
+        const resultadoParrafo = document.createElement("p");
+        resultadoParrafo.style.marginTop = "1rem";
+        resultadoParrafo.style.fontStyle = "italic";
+        resultadoParrafo.style.color = "#ffd1dc";
+        resultado.appendChild(resultadoParrafo);
+
+        const animarFrase = setInterval(() => {
+          if (i < fraseDesencriptada.length) {
+            fraseMostrada += fraseDesencriptada[i];
+            resultadoParrafo.textContent = `🔍 Traduciendo ${input}: ${fraseMostrada}`;
+            i++;
+          } else {
+            clearInterval(animarFrase);
+            resultadoParrafo.textContent = `💖 Se ha traducido: "${fraseDesencriptada}"`;
+          }
+        }, 80);
+
+      } else if (input === respuestaAlReves) {
+        // Respuesta al revés - mensaje especial
+        resultado.innerHTML = `<p>🔄 ¡Vaya, creo que en vez de 10 ingresaste 1/10! 😄</p>
+                              <p>💡 Estás cerca, pero a veces el orden es más importante que la emoción...</p>`;
+      } else {
+        intentos++;
+        let mensaje = `<p>❌ Esa no es la clave secreta. Intenta de nuevo. 💭</p>`;
+        if (intentos >= 3) {
+          mensaje += `<p>💡 Pista adicional: No es una frase completa, pero guarda todo el amor. Está en 10 letras.</p>`;
+        }
+        resultado.innerHTML = mensaje;
+      }
+    }
+
+    function mostrarPistaExtra() {
+      const resultado = document.getElementById('resultado');
+      resultado.innerHTML += `<p>💡 Pista manual: Mi número favorito es el 10, casualmente, es el número de días que llevo planeando esto para ti. Busca 10 días para atrás desde ayer</p>`;
+    }
+
+    function redirigirAVideo() {
+      window.location.href = "video.html";
+    }
+  </script>
+</body>
+</html>

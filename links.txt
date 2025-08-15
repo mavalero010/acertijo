@@ -1,0 +1,8 @@
+"https://www.youtube.com/watch?v=7RWERLR2znU" 0 221 "background"
+
+
+    const canciones = [
+      "audio/audio1Estamoshechospaestarjuntosdiositomeloconfirmo.mp3",
+      "audio/audio0Megustatododeti,megustastu.mp3",
+      "audio/background-music.mp3",
+    ];
