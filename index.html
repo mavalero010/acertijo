@@ -6,7 +6,7 @@
   <title>Camino Misterioso</title>
   <style>
     :root {
-      --rosa: #ff4081;  
+      --rosa: #ff4081;
       --fondo: linear-gradient(135deg, #1e1e2f, #3e3e5e);
     }
     
@@ -337,6 +337,27 @@
       reproducirSiguienteCancion();
     }
 
+    // Función para calcular el porcentaje de similitud
+    function calcularPorcentajeAcierto(input, respuestaCorrecta) {
+      if (input === respuestaCorrecta) return 100;
+      
+      let aciertos = 0;
+      const longitudMaxima = Math.max(input.length, respuestaCorrecta.length);
+      
+      // Comparar caracteres posición por posición
+      for (let i = 0; i < longitudMaxima; i++) {
+        if (i < input.length && i < respuestaCorrecta.length) {
+          if (input[i] === respuestaCorrecta[i]) {
+            aciertos++;
+          }
+        }
+      }
+      
+      // Calcular porcentaje
+      const porcentaje = Math.round((aciertos / longitudMaxima) * 100);
+      return porcentaje;
+    }
+
     function verificarRespuesta() {
       const input = document.getElementById('respuesta').value.trim().toLowerCase();
       const resultado = document.getElementById('resultado');
@@ -346,7 +367,8 @@
       const respuestaAlReves = respuestaCorrecta.split('').reverse().join('');
       
       if (input === respuestaCorrecta) {
-        resultado.innerHTML = `<p>🔓 ¡Respuesta correcta! Has desbloqueado el siguiente paso. 💖</p>`;
+        resultado.innerHTML = `<p>🔓 ¡Respuesta correcta! Has desbloqueado el siguiente paso. 💖</p>
+                              <p>🎯 Porcentaje de acierto: <strong style="color: #4CAF50;">100%</strong> 🎉</p>`;
         final.classList.remove('hidden');
         const codigoFinal = "cyblSDoRRxg";
         document.getElementById('codigoFinal').value = codigoFinal;
@@ -373,11 +395,23 @@
 
       } else if (input === respuestaAlReves) {
         // Respuesta al revés - mensaje especial
+        const porcentaje = calcularPorcentajeAcierto(input, respuestaCorrecta);
         resultado.innerHTML = `<p>🔄 ¡Vaya, creo que en vez de 10 ingresaste 1/10! 😄</p>
-                              <p>💡 Estás cerca, pero a veces el orden es más importante que la emoción...</p>`;
+                              <p>💡 Estás cerca, pero a veces el orden es más importante que la emoción...</p>
+                              <p>🎯 Porcentaje de acierto: <strong style="color: #FF9800;">${porcentaje}%</strong> 🔄</p>`;
       } else {
         intentos++;
-        let mensaje = `<p>❌ Esa no es la clave secreta. Intenta de nuevo. 💭</p>`;
+        const porcentaje = calcularPorcentajeAcierto(input, respuestaCorrecta);
+        
+        // Determinar color del porcentaje según el nivel
+        let colorPorcentaje = "#FF5722"; // Rojo por defecto
+        if (porcentaje >= 70) colorPorcentaje = "#FF9800"; // Naranja
+        if (porcentaje >= 50) colorPorcentaje = "#FFC107"; // Amarillo
+        if (porcentaje >= 30) colorPorcentaje = "#2196F3"; // Azul
+        
+        let mensaje = `<p>❌ Esa no es la clave secreta. Intenta de nuevo. 💭</p>
+                       <p>🎯 Porcentaje de acierto: <strong style="color: ${colorPorcentaje};">${porcentaje}%</strong> 📊</p>`;
+        
         if (intentos >= 3) {
           mensaje += `<p>💡 Pista adicional: No es una frase completa, pero guarda todo el amor. Está en 10 letras.</p>`;
         }
@@ -395,6 +429,4 @@
     }
   </script>
 </body>
-
 </html>
-
